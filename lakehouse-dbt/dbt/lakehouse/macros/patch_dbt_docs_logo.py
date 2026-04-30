@@ -2,9 +2,9 @@ import os
 import shutil
 
 # caminhos
-target_dir = "/opt/airflow/dbt/essential_lakehouse/target"
+target_dir = ".../dbt/lakehouse/target"
 index_path = os.path.join(target_dir, "index.html")
-logo_path = "/opt/airflow/dbt/essential_lakehouse/target/images.png"
+logo_path = ".../dbt/lakehouse/target/images.png"
 target_logo_path = os.path.join(target_dir, "images.png")
 
 # read

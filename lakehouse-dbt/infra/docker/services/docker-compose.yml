@@ -1,0 +1,65 @@
+version: '3.2'
+
+services:
+    # minio:
+    #   image: minio/minio:RELEASE.2024-11-07T00-52-20Z
+    #   container_name: minio
+    #   restart: unless-stopped
+    #   ports:
+    #     - 9000:9000
+    #     - 9001:9001
+    #   volumes:
+    #     - /docker/minio:/data
+    #   environment:
+    #     MINIO_ROOT_USER: "root"
+    #     MINIO_ROOT_PASSWORD: "mentorstec123"
+    #   command: server /data --console-address ":9001"
+    #   networks:
+    #     - webnet
+      
+    postgres:
+      image: postgres
+      container_name: postgres_nessie
+      restart: unless-stopped
+      ports:
+        - 5432:5432
+      volumes:
+       - metastore_data:/data/postgres
+      environment:
+        POSTGRES_USER: root
+        POSTGRES_PASSWORD: mentorstec123
+        POSTGRES_DB: nessie
+
+    nessie:
+      image: ghcr.io/projectnessie/nessie
+      container_name: nessie
+      restart: unless-stopped
+      ports:
+        - 19120:19120
+      depends_on:
+        - postgres
+      environment:
+        NESSIE_VERSION_STORE_TYPE: JDBC
+        QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://postgres:5432/nessie
+        QUARKUS_DATASOURCE_USERNAME: root
+        QUARKUS_DATASOURCE_PASSWORD: mentorstec123
+    
+    nessie_dev:
+      image: ghcr.io/projectnessie/nessie
+      container_name: nessie_dev
+      restart: unless-stopped
+      ports:
+        - 19121:19120
+      depends_on:
+        - postgres
+      environment:
+        NESSIE_VERSION_STORE_TYPE: JDBC
+        QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://postgres:5432/nessie_dev
+        QUARKUS_DATASOURCE_USERNAME: root
+        QUARKUS_DATASOURCE_PASSWORD: mentorstec123
+
+volumes:
+  metastore_data:
+
+networks:
+  webnet:
